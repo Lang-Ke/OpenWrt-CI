@@ -213,28 +213,27 @@ jobs:
         echo "FIRMWARE_PATH=$PWD" >> "$GITHUB_ENV"
 
     - name: Upload Firmware To Release(发布固件)
-      if: steps.compile.outputs.status == 'success'
-      uses: ncipollo/release-action@v1
-      with:
-        name: ${{ env.DATE }} for ${{ inputs.firmware_tag }}
-        allowUpdates: true
-        tag: ${{ inputs.firmware_tag }}
-        token: ${{ github.token }}
-        artifacts: ${{ env.FIRMWARE_PATH }}/*
-        body: |
-          **This is OpenWrt Firmware for ${{ inputs.firmware_tag }}**
-          ### 📒 固件信息
-          - ${{ inputs.release_summary }}
-          - 💻 这是 ${{ inputs.firmware_tag }} 平台使用的 OpenWrt 固件
-          - ⚽ 固件源码: ${{ inputs.repo_url }}
-          - 💝 源码分支: ${{ inputs.repo_branch }}
-          - 🌐 默认地址: **192.168.2.1**
-          - 🔑 默认密码: none
-          ### 🧊 固件版本
-          - 固件内核版本：**${{ env.VERSION_KERNEL }}**
-          - 固件编译前最后一次➦[主源码](${{ inputs.repo_url }})更新记录
-          - ${{ env.VERSION_INFO }}
-
+    if: steps.compile.outputs.status == 'success'
+    uses: ncipollo/release-action@v1
+    with:
+      name: ${{ env.DATE }} for ${{ inputs.firmware_tag }}
+      allowUpdates: false
+      tag: ${{ inputs.firmware_tag }}-${{ env.FILE_DATE }}-build${{ github.run_number }}
+      token: ${{ github.token }}
+      artifacts: ${{ env.FIRMWARE_PATH }}/*
+      body: |
+        **This is OpenWrt Firmware for ${{ inputs.firmware_tag }}**
+        ### 📒 固件信息
+        - ${{ inputs.release_summary }}
+        - 💻 这是 ${{ inputs.firmware_tag }} 平台使用的 OpenWrt 固件
+        - ⚽ 固件源码: ${{ inputs.repo_url }}
+        - 💝 源码分支: ${{ inputs.repo_branch }}
+        - 🌐 默认地址: **192.168.2.1**
+        - 🔑 默认密码: none
+        ### 🧊 固件版本
+        - 固件内核版本：**${{ env.VERSION_KERNEL }}**
+        - 固件编译前最后一次➦[主源码](${{ inputs.repo_url }})更新记录
+        - ${{ env.VERSION_INFO }}
     - name: Delete Old Cache(删除旧缓存)
       if: steps.compile.outputs.status == 'success'
       env:
