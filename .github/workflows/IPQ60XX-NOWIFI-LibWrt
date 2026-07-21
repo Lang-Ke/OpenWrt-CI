@@ -1,0 +1,28 @@
+name: IPQ60XX-NOWIFI-LibWrt
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  # schedule:
+  #   - cron: "0 18 * * *"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  Build:
+    uses: ./.github/workflows/Build-OpenWrt.yml
+    permissions:
+      contents: write
+      actions: write
+    with:
+      repo_url: https://github.com/laipeng668/openwrt-6.x.git
+      repo_branch: 25.12-nss
+      config_file: configs/IPQ60XX-NOWIFI.config
+      firmware_tag: IPQ60XX
+      kernel_file: kernel-6.12
+      artifact_prefix: IPQ60XX
+      manifest_file: libwrt-qualcommax-ipq60xx.manifest
+      release_summary: >-
+        这是开启全功能NSS没有WiFi的6.12内核固件，默认主题为Aurora；该固件在ImmortalWrt的基础上，添加了额外的软件包cpufreq、ddns、upnp、wol、samba4、vlmcsd、autoreboot、uhttpd、frps、frpc、diskman、hd-idle、acme、wireguard、watchcat、3cat、passwall，并添加了若干工具，具体详见IPQ60XX.config和General.config。
