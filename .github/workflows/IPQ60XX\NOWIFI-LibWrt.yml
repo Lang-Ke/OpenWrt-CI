@@ -19,7 +19,7 @@ jobs:
     with:
       repo_url: https://github.com/laipeng668/openwrt-6.x.git
       repo_branch: 25.12-nss
-      config_file: configs/IPQ60XX-NOWIFI.config
+      config_file: configs/IPQ60XX\NOWIFI.config
       firmware_tag: IPQ60XX
       kernel_file: kernel-6.12
       artifact_prefix: IPQ60XX
