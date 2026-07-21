@@ -2,8 +2,8 @@
 set -Eeuo pipefail
 
 # 修改默认IP & 固件名称 & 编译署名和时间
-sed -i 's/192.168.1.1/192.168.2.1/g' package/base-files/files/bin/config_generate
-sed -i "s/hostname='.*'/hostname='Roc'/g" package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.1.1/g' package/base-files/files/bin/config_generate
+sed -i "s/hostname='.*'/hostname='OpenWrt'/g" package/base-files/files/bin/config_generate
 luci_system_js="feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js"
 firmware_version_anchor="_('Firmware Version'), (L.isObject(boardinfo.release) ? boardinfo.release.description + ' / ' : '') + (luciversion || ''),"
 grep -Fq "$firmware_version_anchor" "$luci_system_js" || { echo "Error: LuCI firmware version anchor was not found in $luci_system_js" >&2; exit 1; }
