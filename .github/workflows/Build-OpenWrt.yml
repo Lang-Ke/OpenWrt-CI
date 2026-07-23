@@ -258,7 +258,6 @@ jobs:
         name: ${{ inputs.firmware_tag }}-${{ env.FILE_DATE }}
         tag: ${{ inputs.firmware_tag }}-${{ env.FILE_DATE }}
         allowUpdates: false
-        tag: ${{ inputs.firmware_tag }}
         token: ${{ github.token }}
         artifacts: ${{ env.FIRMWARE_PATH }}/*
         body: |
