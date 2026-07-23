@@ -8,7 +8,7 @@
 - **本固件禁止用于任何商业用途，请务必严格遵守国家互联网使用相关法律规定！**
 
 ## 项目说明
-- 默认管理地址：**`192.168.2.1`**，默认用户：**`root`**，默认密码：**`none`**
+- 默认管理地址：**`192.168.1.1`**，默认用户：**`root`**，默认密码：**`none`**
 - [云编译来源](https://github.com/haiibo/OpenWrt) [视频教程](https://www.youtube.com/watch?v=6j4ofS0GT38) [问题合集](https://github.com/LiBwrt/openwrt-6.x/issues)
 
 ## 仓库说明
