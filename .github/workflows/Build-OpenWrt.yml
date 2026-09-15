@@ -380,7 +380,7 @@ jobs:
         artifactErrorsFailBuild: true
         tag: ${{ inputs.firmware_tag }}
         token: ${{ github.token }}
-        artifacts: artifacts/firmware/*
+        artifacts: artifacts/firmware/*.bin
         body: |
           **This is OpenWrt Firmware for ${{ inputs.firmware_tag }}**
           ### 📒 固件信息
