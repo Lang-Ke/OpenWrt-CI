@@ -371,85 +371,30 @@ jobs:
         name: ${{ needs.Build.outputs.artifact_name }}
         path: artifacts/firmware
 
-    - name: Create Release Tag(创建发布Tag)
-      env:
-        GH_TOKEN: ${{ github.token }}
-        RELEASE_TAG: ${{ inputs.firmware_tag }}
-      run: |
-        set -e
-
-        echo "========== Create Release Tag =========="
-        echo "Repository: $GITHUB_REPOSITORY"
-        echo "Tag: $RELEASE_TAG"
-        echo "Commit: $GITHUB_SHA"
-
-        if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" >/dev/null 2>&1; then
-          echo "Tag already exists: $RELEASE_TAG"
-        else
-          gh api \
-            --method POST \
-            "repos/$GITHUB_REPOSITORY/git/refs" \
-            -f "ref=refs/tags/$RELEASE_TAG" \
-            -f "sha=$GITHUB_SHA"
-
-          echo "Tag created: $RELEASE_TAG"
-        fi
-
     - name: Upload Firmware To Release(发布固件)
-      env:
-        GH_TOKEN: ${{ github.token }}
-        RELEASE_TAG: ${{ inputs.firmware_tag }}
-      run: |
-        set -e
+      uses: ncipollo/release-action@v1
+      with:
+        name: ${{ inputs.firmware_tag }}
+        allowUpdates: true
+        replacesArtifacts: true
+        artifactErrorsFailBuild: true
+        tag: ${{ inputs.firmware_tag }}
+        token: ${{ github.token }}
+        artifacts: artifacts/firmware/*
+        body: |
+          **This is OpenWrt Firmware for ${{ inputs.firmware_tag }}**
+          ### 📒 固件信息
+          - ${{ inputs.release_summary }}
+          - 💻 这是 ${{ inputs.firmware_tag }} 平台使用的 OpenWrt 固件
+          - ⚽ 固件源码: ${{ inputs.repo_url }}
+          - 💝 源码分支: ${{ inputs.repo_branch }}
+          - 🌐 默认地址: **192.168.2.1**
+          - 🔑 默认密码: none
+          ### 🧊 固件版本
+          - 固件内核版本：**${{ needs.Build.outputs.version_kernel }}**
+          - 固件编译前最后一次➦[主源码](${{ inputs.repo_url }})更新记录
+          - ${{ needs.Build.outputs.version_info }}
 
-        echo "========== Release =========="
-
-        shopt -s nullglob
-        files=(artifacts/firmware/*.bin)
-
-        if [ "${#files[@]}" -eq 0 ]; then
-          echo "::error::No .bin firmware files found."
-          exit 1
-        fi
-
-        echo "Found ${#files[@]} firmware file(s):"
-
-        for file in "${files[@]}"; do
-          ls -lh "$file"
-        done
-
-        if gh release view "$RELEASE_TAG" \
-          --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-
-          echo "Release already exists."
-
-          gh release upload \
-            "$RELEASE_TAG" \
-            "${files[@]}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --clobber
-
-        else
-
-          echo "Creating Release..."
-
-          gh release create \
-            "$RELEASE_TAG" \
-            "${files[@]}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "$RELEASE_TAG" \
-            --notes "OpenWrt Firmware for ${{ inputs.firmware_tag }}
-
-        - 平台：${{ inputs.firmware_tag }}
-        - 固件源码：${{ inputs.repo_url }}
-        - 源码分支：${{ inputs.repo_branch }}
-        - 默认地址：192.168.2.1
-        - 默认密码：none
-        - 内核版本：${{ needs.Build.outputs.version_kernel }}
-        - ${{ needs.Build.outputs.version_info }}"
-
-        fi
-        echo "========== Release completed =========="
   Cleanup:
     runs-on: ubuntu-24.04
     needs:
